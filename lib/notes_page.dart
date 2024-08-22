@@ -1,71 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:classic/theme/theme_manager.dart';
+import 'package:classic/theme/theme_constants.dart';
 
-class NotesPage extends StatefulWidget {
-  @override
-  _NotesPageState createState() => _NotesPageState();
-}
+class NotesPage extends StatelessWidget {
+  final String name;
+  final ThemeManager themeManager;
 
-class _NotesPageState extends State<NotesPage> {
-  final TextEditingController _noteController = TextEditingController();
-  late FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
+  const NotesPage({Key? key, required this.name, required this.themeManager}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TextTheme _textTheme = Theme.of(context).textTheme;
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notes Page"),
+        title: Text("Notes for $name"),
         backgroundColor: isDark ? Colors.grey[850] : Colors.white,
         foregroundColor: isDark ? Colors.white : Colors.black,
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: Icon(isDark ? Icons.wb_sunny : Icons.nights_stay),
             onPressed: () {
-              // Implement save functionality
-              String noteContent = _noteController.text;
-              // Save the noteContent with user-defined name here
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Note saved!')),
-              );
-              Navigator.pop(context);
+              themeManager.toggleTheme(!isDark);
             },
           ),
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-
-          FocusScope.of(context).unfocus();
-        },
-        child: Container(
-          padding: EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: EditableText(
-              controller: _noteController,
-              focusNode: _focusNode,
-              style: _textTheme.bodyMedium!.copyWith(
-                color: isDark ? Colors.white : Colors.black,
-              )!,
-              cursorColor: Colors.blue,
-              backgroundCursorColor: Colors.blue,
-              maxLines: null,
-            ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextField(
+          maxLines: null,
+          keyboardType: TextInputType.multiline,
+          style: TextStyles.bodyText.copyWith(color: isDark ? Colors.white : Colors.black),
+          decoration: InputDecoration.collapsed(
+            hintText: "Write your notes here...",
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.save, color: Colors.black),
+        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
+        onPressed: () {
+          // Implement save functionality
+        },
       ),
     );
   }

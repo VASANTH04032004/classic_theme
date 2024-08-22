@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:classic/theme/theme_manager.dart';
 import 'package:classic/theme/theme_constants.dart';
+import 'profile_page.dart'; // Import the ProfilePage
+import 'notes_page.dart'; // Import the NotesPage
 
 void main() {
   runApp(MyApp());
@@ -26,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  themeListener() {
+  void themeListener() {
     if (mounted) {
       setState(() {});
     }
@@ -36,7 +38,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: _themeManager.themeMode,
@@ -109,138 +110,14 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: buttonColor,
                   ),
-                  child: Text("Next", style: TextStyle(color: Colors.black)),
+                  child: Text("Next", style: TextStyles.button.copyWith(color: Colors.black)),
                 ),
               ),
             ],
           ),
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add, color: Colors.black),
-        backgroundColor: buttonColor,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NotesPage(
-                name: _nameController.text,
-                themeManager: _themeManager,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class ProfilePage extends StatelessWidget {
-  final String name;
-  final ThemeManager themeManager;
-
-  const ProfilePage({Key? key, required this.name, required this.themeManager}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile"),
-        backgroundColor: isDark ? Colors.grey[850] : Colors.white,
-        foregroundColor: isDark ? Colors.white : Colors.black,
-        actions: [
-          IconButton(
-            icon: Icon(isDark ? Icons.wb_sunny : Icons.nights_stay),
-            onPressed: () {
-              themeManager.toggleTheme(!isDark);
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              name,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: [
-                  // Display saved notes here.
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add, color: Colors.black),
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NotesPage(
-                name: name,
-                themeManager: themeManager,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class NotesPage extends StatelessWidget {
-  final String name;
-  final ThemeManager themeManager;
-
-  const NotesPage({Key? key, required this.name, required this.themeManager}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Notes for $name"),
-        backgroundColor: isDark ? Colors.grey[850] : Colors.white,
-        foregroundColor: isDark ? Colors.white : Colors.black,
-        actions: [
-          IconButton(
-            icon: Icon(isDark ? Icons.wb_sunny : Icons.nights_stay),
-            onPressed: () {
-              themeManager.toggleTheme(!isDark);
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TextField(
-          maxLines: null,
-          keyboardType: TextInputType.multiline,
-          style: TextStyle(color: isDark ? Colors.white : Colors.black),
-          decoration: InputDecoration.collapsed(
-            hintText: "Write your notes here...",
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.save, color: Colors.black),
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-        onPressed: () {
-          // Implement save functionality
-        },
-      ),
+      // Remove FloatingActionButton here
     );
   }
 }

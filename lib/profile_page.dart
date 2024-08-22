@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'notes_page.dart'; // Import the NotesPage
+import 'package:classic/theme/theme_manager.dart';
+import 'package:classic/theme/theme_constants.dart';
 
 class ProfilePage extends StatefulWidget {
-  final String content;
+  final String name;
+  final ThemeManager themeManager;
 
-  ProfilePage({required this.content});
+  const ProfilePage({Key? key, required this.name, required this.themeManager}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -18,22 +20,22 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    userName = widget.name;
     loadNotes();
   }
 
   void loadNotes() {
-
+    // Load notes from storage or initialize empty.
     savedNotes = {};
   }
 
   void _navigateToNotesPage() async {
     final noteContent = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => NotesPage()),
+      MaterialPageRoute(builder: (context) => NotesPage(name: userName, themeManager: widget.themeManager)),
     );
     if (noteContent != null && noteContent is String) {
       setState(() {
-
         savedNotes[userName] = noteContent;
       });
     }
@@ -70,7 +72,6 @@ class _ProfilePageState extends State<ProfilePage> {
     if (newName != null && newName.isNotEmpty) {
       setState(() {
         userName = newName;
-        // Save notes with the new name
         savedNotes[userName] = savedNotes.remove(userName) ?? "";
       });
     }
@@ -88,8 +89,10 @@ class _ProfilePageState extends State<ProfilePage> {
         foregroundColor: isDark ? Colors.white : Colors.black,
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _navigateToNotesPage,
+            icon: Icon(isDark ? Icons.wb_sunny : Icons.nights_stay),
+            onPressed: () {
+              widget.themeManager.toggleTheme(!isDark);
+            },
           ),
           IconButton(
             icon: Icon(Icons.edit),
@@ -106,18 +109,16 @@ class _ProfilePageState extends State<ProfilePage> {
               color: isDark ? Colors.white : Colors.black,
             ),
           ),
-          if (widget.content.isNotEmpty)
-            Text(
-              widget.content,
-              style: _textTheme.bodyMedium?.copyWith(
-                color: isDark ? Colors.white : Colors.black,
-              ),
-            ),
           ...savedNotes.entries.map((entry) => ListTile(
             title: Text(entry.value),
             subtitle: Text(entry.key),
           )),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add, color: Colors.black),
+        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
+        onPressed: _navigateToNotesPage,
       ),
     );
   }
