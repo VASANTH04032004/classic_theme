@@ -37,13 +37,6 @@ class NotesPage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.save, color: Colors.black),
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-        onPressed: () {
-          // Implement save functionality
-        },
-      ),
     );
   }
 }
